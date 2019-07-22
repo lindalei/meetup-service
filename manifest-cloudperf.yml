@@ -1,0 +1,23 @@
+---
+applications:
+- name: document-service-lib-sample
+  routes:
+  - route: https://dpp-development-md-perf-document-service-lib-sample.cfapps.sap.hana.ondemand.com
+  memory: 1G
+  path: target/document-service-lib-sample.jar
+  timeout: 160
+  buildpacks:
+  - java_buildpack
+  env:
+    # Use the non-blocking /dev/urandom instead of the default to generate random numbers.
+    # This may help with slow startup times, especially when using Spring Boot.
+    JAVA_OPTS: -Djava.security.egd=file:///dev/.app/urandom -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n
+    SPRING_PROFILES_ACTIVE: clouddev
+    COM_SAP_ICD_MT_DYNAMIC_DB_DEPLOYMENT_URL: https://dpp-development-md-perf-regulation-db.cfapps.sap.hana.ondemand.com/v1/deploy
+    SAP_JWT_TRUST_ACL: "[{\"clientid\":\"*\",\"identityzone\":\"*\"}]"
+    COM_SAP_ICD_MT_DYNAMIC_DB_DEPLOYMENT_USER: user
+    COM_SAP_ICD_MT_DYNAMIC_DB_DEPLOYMENT_PASSWORD: password
+  services:
+  - document-postgres
+  - regulation-managed-objectstore
+  - regulation-malware-scanner
